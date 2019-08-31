@@ -1,0 +1,6 @@
+language: node_js
+node_js:
+  - "10"
+install:
+  - npm install now
+  - ./node_modules/.bin/now -C -t $NOW_TOKEN
