@@ -3,4 +3,4 @@ node_js:
   - "10"
 install:
   - npm install now
-  - ./node_modules/.bin/now -C -t $NOW_TOKEN --env BASE_URL=$BASE_URL --env FEED_TOKEN=$FEED_TOKEN --env FEED_ID=$FEED_ID --env DATABASE_CONNECTION_STRING=$DATABASE_CONNECTION_STRING
+  - ./node_modules/.bin/now -C -t $NOW_TOKEN --env APP_VERSION=$APP_VERSION --env BASE_URL=$BASE_URL --env FEED_TOKEN=$FEED_TOKEN --env FEED_ID=$FEED_ID --env DATABASE_CONNECTION_STRING=$DATABASE_CONNECTION_STRING
