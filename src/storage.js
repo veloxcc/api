@@ -1,7 +1,5 @@
 require('dotenv').config();
 
-console.log('process.env.APP_VERSION : ', process.env.APP_VERSION);
-
 const MongoClient = require('mongodb').MongoClient;
 const connectionUrl = process.env.DATABASE_CONNECTION_STRING;
 
