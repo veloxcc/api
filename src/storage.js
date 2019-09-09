@@ -45,7 +45,7 @@ module.exports.load = async function load() {
     const db = client.db(dbName);
     const col = db.collection(colName);
 
-    success = await col.find().toArray();
+    success = await col.find({}, { sort: [['time', 'desc']]}).toArray();
   } catch (err) {
     console.log(err.stack);
   }
