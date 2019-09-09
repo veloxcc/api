@@ -1,6 +1,6 @@
 const fetchData = require('../src/fetchData');
 const storage = require('../src/storage');
-const cacheTimeInSeconds = 3600;
+const cacheTimeInSeconds = 3000;
 
 module.exports = async (req, res) => {
   const response = await asyncTask(res);
