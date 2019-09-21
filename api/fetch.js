@@ -1,6 +1,7 @@
-const fetchData = require('../src/fetchData');
+const fetch = require('../src/fetch');
 const storage = require('../src/storage');
-const cacheTimeInSeconds = 3000;
+const logger = require('../src/logger');
+const cacheTimeInSeconds = 1800;
 
 module.exports = async (req, res) => {
   const response = await asyncTask(res);
@@ -13,7 +14,7 @@ module.exports = async (req, res) => {
 
 const asyncTask = async res => {
   try {
-    const data = await fetchData();
+    const data = await fetch();
     if (data) {
       const { items, rateLimit } = data;
       res.setHeader('velox-count', rateLimit.count);
@@ -23,9 +24,9 @@ const asyncTask = async res => {
   } catch(err) {
     if (err.response) {
       const { data: errorData } = err.response;
-      console.log(err && `Error: ${err.message}${ errorData ? `, ${errorData.errorMessage}` : ''}`);
+      logger(err && `Error: ${err.message}${ errorData ? `, ${errorData.errorMessage}` : ''}`);
     } else {
-      console.log(err.message);
+      logger(err.message);
     }
     return false;
   }

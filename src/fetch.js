@@ -1,17 +1,16 @@
 require('dotenv').config();
 
-const baseURL = process.env.BASE_URL;
-const token = process.env.FEED_TOKEN;
-const streamId = process.env.FEED_ID;
-
 const axios = require('axios'); 
-const endpointVersion = 'v3';
-const endpoint = '/streams/contents';
+const auth = require('./auth');
+const storage = require('./storage');
+const logger = require('./logger');
+
+const baseURL = process.env.API_BASE_URL;
+const streamId = process.env.API_FEED_ID;
 
 const http = axios.create({
   baseURL,
   timeout: 5000,
-  headers: {'Authorization': `OAuth ${token}`}
 });
 
 const getMetaUrl = items => {
@@ -40,19 +39,19 @@ const getUrl = ({
   return urls.origin;
 }
 
-const getFeed = async () => {
+const fetch = async () => {
   const params = {
     count: 200,
     streamId: streamId,
     ranked: 'engagement',
     newerThan: new Date().getTime() - (60*60*24*1000),
   };
-
-  const response = await http.get(`/${endpointVersion}${endpoint}`, { params });
+  const token = await storage.getAccessToken();
+  const headers = {'Authorization': `OAuth ${token}`};
+  const response = await http.get('/v3/streams/contents', { params, headers });
   const items = [];
 
   response.data.items.forEach(item => {
-
     const {
       fingerprint,
       title,
@@ -68,7 +67,6 @@ const getFeed = async () => {
       sourceUrl,
       time,
     })
-
   });
 
   const data = {
@@ -83,4 +81,27 @@ const getFeed = async () => {
   return data;
 }
 
-module.exports = getFeed;
+http.interceptors.response.use(undefined, async error => {
+  const { config, response: { status } } = error;
+  const originalRequest = config;
+
+  if (status === 401) {
+    const response = await auth.refreshToken();
+    if (!response) {
+      logger('Failed to refresh token');
+      return Promise.reject(new Error());
+    }
+
+    const result = await storage.saveAccessToken(response.access_token);
+    if (!result) {
+      logger('Failed to save access token');
+      return Promise.reject(error);
+    }
+
+    originalRequest.headers.Authorization = `OAuth ${response.access_token}`;
+    return http(originalRequest);
+  }
+  return Promise.reject(error);
+});
+
+module.exports = fetch;

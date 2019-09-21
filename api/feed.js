@@ -1,5 +1,6 @@
 const storage = require('../src/storage');
-const cacheTimeInSeconds = 300;
+const logger = require('../src/logger');
+const cacheTimeInSeconds = 1800;
 
 module.exports = async (req, res) => {
   const response = await asyncTask();
@@ -15,7 +16,7 @@ const asyncTask = async () => {
     const data = await storage.load();
     return data;
   } catch(err) {
-    console.log(err);
+    logger(err);
   }
   return false;
 }
