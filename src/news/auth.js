@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const axios = require('axios'); 
 const CryptoJS = require('crypto-js');
-const logger = require('./logger');
+const logger = require('../logger');
 
 const API_BASE_URL = process.env.API_BASE_URL;
 const API_CLIENT_ID = process.env.API_CLIENT_ID;

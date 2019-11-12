@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const auth = require('./auth');
-const logger = require('./logger');
+const logger = require('../logger');
 const MongoClient = require('mongodb').MongoClient;
 const connectionUrl = process.env.DB_CONNECTION_STRING;
 

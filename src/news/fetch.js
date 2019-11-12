@@ -3,7 +3,7 @@ require('dotenv').config();
 const axios = require('axios'); 
 const auth = require('./auth');
 const storage = require('./storage');
-const logger = require('./logger');
+const logger = require('../logger');
 
 const baseURL = process.env.API_BASE_URL;
 const streamId = process.env.API_FEED_ID;

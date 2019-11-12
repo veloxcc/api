@@ -1,6 +1,6 @@
-const fetch = require('../src/fetch');
-const storage = require('../src/storage');
-const logger = require('../src/logger');
+const fetch = require('../../src/news/fetch');
+const storage = require('../../src/news/storage');
+const logger = require('../../src/logger');
 const cacheTimeInSeconds = 1800;
 
 module.exports = async (req, res) => {
