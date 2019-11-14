@@ -10,8 +10,8 @@ const clientOptions = {
   useUnifiedTopology: true,
 };
 
-const dbName = 'cyclingNews';
-const colName = 'feedItems';
+const dbName = 'velox';
+const colName = 'news';
 
 module.exports.save = async function save(data) {
   const client = new MongoClient(connectionUrl, clientOptions);
@@ -20,7 +20,7 @@ module.exports.save = async function save(data) {
     await client.connect();
 
     const db = client.db(dbName);
-    const tmpColName = `feedItems_${new Date().getTime()}`;
+    const tmpColName = `news_${new Date().getTime()}`;
     const collection = db.collection(colName);
     const tmpCollection = db.collection(tmpColName);
     const dropCollection = await collection.countDocuments() > 0;
@@ -66,10 +66,10 @@ module.exports.saveAccessToken = async function saveAccessToken(token) {
     await client.connect();
 
     const db = client.db(dbName);
-    const col = db.collection('config');
+    const col = db.collection('settings');
 
     const callback = await col.updateOne(
-      { property: 'access_token' },
+      { property: 'news_access_token' },
       { $set: { value: auth.encryptToken(token) } },
       { upsert: true }
     );
@@ -90,9 +90,9 @@ module.exports.getAccessToken = async function getAccessToken() {
     await client.connect();
 
     const db = client.db(dbName);
-    const col = db.collection('config');
+    const col = db.collection('settings');
 
-    const doc = await col.findOne({ property: 'access_token' });
+    const doc = await col.findOne({ property: 'news_access_token' });
     success = doc ? auth.decryptToken(doc.value) : false;
   } catch (err) {
     logger(err.stack);
