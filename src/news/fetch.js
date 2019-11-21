@@ -10,7 +10,7 @@ const streamId = process.env.API_FEED_ID;
 
 const http = axios.create({
   baseURL,
-  timeout: 5000,
+  timeout: 3000,
 });
 
 const getMetaUrl = items => {

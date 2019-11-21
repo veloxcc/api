@@ -12,7 +12,7 @@ const SALT = API_TOKEN;
 
 const http = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 5000,
+  timeout: 3000,
 });
 
 module.exports.revokeToken = async () => {
