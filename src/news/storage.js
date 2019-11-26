@@ -8,6 +8,7 @@ const connectionUrl = process.env.DB_CONNECTION_STRING;
 const clientOptions = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  connectTimeoutMS: 8000,
 };
 
 const dbName = 'velox';
