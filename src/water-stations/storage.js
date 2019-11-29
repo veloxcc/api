@@ -9,7 +9,7 @@ const clientOptions = {
   useUnifiedTopology: true,
 };
 
-const dbName = 'velox';
+const dbName = process.env.DB_NAME;
 const colName = 'waterStations';
 
 module.exports.load = async function load({ lat, lng, r = 2500}) {
