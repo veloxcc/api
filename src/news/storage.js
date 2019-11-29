@@ -11,7 +11,7 @@ const clientOptions = {
   connectTimeoutMS: 8000,
 };
 
-const dbName = 'velox';
+const dbName = process.env.DB_NAME;
 const colName = 'news';
 
 module.exports.save = async function save(data) {
@@ -49,6 +49,24 @@ module.exports.load = async function load() {
     const col = db.collection(colName);
 
     success = await col.find({}, { sort: [['time', 'desc']]}).toArray();
+  } catch (err) {
+    logger(err.stack);
+  }
+
+  await client.close();
+  return success;
+}
+
+module.exports.getNewsSources = async function load() {
+  const client = new MongoClient(connectionUrl, clientOptions);
+  let success = false;
+  try {
+    await client.connect();
+
+    const db = client.db(dbName);
+    const col = db.collection('newsSources');
+
+    success = await col.find().toArray();
   } catch (err) {
     logger(err.stack);
   }

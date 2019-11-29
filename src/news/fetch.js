@@ -49,7 +49,13 @@ const fetch = async () => {
   const token = await storage.getAccessToken();
   const headers = {'Authorization': `OAuth ${token}`};
   const response = await http.get('/v3/streams/contents', { params, headers });
+  const newsSources = await storage.getNewsSources() || [];
   const items = [];
+
+  const getSource = title => {
+    const match = newsSources.find(({ source }) => source === title);
+    return match && match.formatted || title;
+  };
 
   response.data.items.forEach(item => {
     const {
@@ -57,14 +63,18 @@ const fetch = async () => {
       title,
       origin: { title: source, htmlUrl: sourceUrl },
       crawled: time,
+      visual,
     } = item;
+
+    const image = visual && visual.url || null;
 
     items.push({
       fingerprint,
       title,
       url: getUrl(item),
-      source,
+      source: getSource(source),
       sourceUrl,
+      image,
       time,
     })
   });
