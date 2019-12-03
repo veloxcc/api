@@ -53,7 +53,6 @@ module.exports.load = async function load() {
     logger(err.stack);
   }
 
-  await client.close();
   return success;
 }
 
