@@ -37,6 +37,5 @@ module.exports.load = async function load({ lat, lng, r = 2500}) {
     logger(err.stack);
   }
 
-  await client.close();
   return docs;
 }

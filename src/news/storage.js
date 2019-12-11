@@ -35,7 +35,6 @@ module.exports.save = async function save(data) {
     logger(err.stack);
   }
 
-  await client.close();
   return success;
 }
 
@@ -70,7 +69,6 @@ module.exports.getNewsSources = async function load() {
     logger(err.stack);
   }
 
-  await client.close();
   return success;
 }
 
@@ -97,7 +95,6 @@ module.exports.saveAccessToken = async function saveAccessToken(token) {
     logger(err.stack);
   }
 
-  await client.close();
   return success;
 }
 
@@ -116,6 +113,5 @@ module.exports.getAccessToken = async function getAccessToken() {
     logger(err.stack);
   }
 
-  await client.close();
   return success;
 }
