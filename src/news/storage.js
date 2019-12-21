@@ -13,12 +13,13 @@ const clientOptions = {
 
 const dbName = process.env.DB_NAME;
 const colName = 'news';
+const client = new MongoClient(connectionUrl, clientOptions);
 
 module.exports.save = async function save(data) {
-  const client = new MongoClient(connectionUrl, clientOptions);
   let success = false;
   try {
-    await client.connect();
+    if (client.isConnected() === false)
+      await client.connect();
 
     const db = client.db(dbName);
     const tmpColName = `news_${new Date().getTime()}`;
@@ -39,10 +40,10 @@ module.exports.save = async function save(data) {
 }
 
 module.exports.load = async function load() {
-  const client = new MongoClient(connectionUrl, clientOptions);
   let success = false;
   try {
-    await client.connect();
+    if (client.isConnected() === false)
+      await client.connect();
 
     const db = client.db(dbName);
     const col = db.collection(colName);
@@ -56,10 +57,10 @@ module.exports.load = async function load() {
 }
 
 module.exports.getNewsSources = async function load() {
-  const client = new MongoClient(connectionUrl, clientOptions);
   let success = false;
   try {
-    await client.connect();
+    if (client.isConnected() === false)
+      await client.connect();
 
     const db = client.db(dbName);
     const col = db.collection('newsSources');
@@ -75,11 +76,11 @@ module.exports.getNewsSources = async function load() {
 module.exports.saveAccessToken = async function saveAccessToken(token) {
   if (!token) return false;
 
-  const client = new MongoClient(connectionUrl, clientOptions);
   let success = false;
 
   try {
-    await client.connect();
+    if (client.isConnected() === false)
+      await client.connect();
 
     const db = client.db(dbName);
     const col = db.collection('settings');
@@ -99,10 +100,10 @@ module.exports.saveAccessToken = async function saveAccessToken(token) {
 }
 
 module.exports.getAccessToken = async function getAccessToken() {
-  const client = new MongoClient(connectionUrl, clientOptions);
   let success = false;
   try {
-    await client.connect();
+    if (client.isConnected() === false)
+      await client.connect();
 
     const db = client.db(dbName);
     const col = db.collection('settings');
