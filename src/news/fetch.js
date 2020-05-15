@@ -1,9 +1,9 @@
 require('dotenv').config();
 
-const axios = require('axios'); 
-const auth = require('./auth');
-const storage = require('./storage');
-const logger = require('../logger');
+import axios from 'axios';
+import auth from './auth';
+import storage from './storage';
+import logger from '../logger';
 
 const baseURL = process.env.API_BASE_URL;
 const streamId = process.env.API_FEED_ID;
@@ -40,11 +40,11 @@ const getUrl = ({
 }
 
 const fetch = async () => {
+  const newThanInHours = 5;
   const params = {
-    count: 200,
+    count: 1000,
     streamId: streamId,
-    ranked: 'engagement',
-    newerThan: new Date().getTime() - (60*60*24*1000),
+    newerThan: new Date().getTime() - (60*60*newThanInHours*1000),
   };
   const token = await storage.getAccessToken();
   const headers = {'Authorization': `OAuth ${token}`};
@@ -52,30 +52,36 @@ const fetch = async () => {
   const newsSources = await storage.getNewsSources() || [];
   const items = [];
 
-  const getSource = title => {
+  const getSourceTitle = title => {
     const match = newsSources.find(({ source }) => source === title);
     return match && match.formatted || title;
   };
 
   response.data.items.forEach(item => {
     const {
-      fingerprint,
+      id: article_id,
       title,
       origin: { title: source, htmlUrl: sourceUrl },
-      crawled: time,
+      crawled: published,
       visual,
+      engagement,
+      engagementRate,
     } = item;
 
     const image = visual && visual.url || null;
 
     items.push({
-      fingerprint,
+      article_id,
       title,
       url: getUrl(item),
-      source: getSource(source),
-      sourceUrl,
+      source: {
+        title: getSourceTitle(source),
+        url: sourceUrl,
+      },
       image,
-      time,
+      published,
+      engagement,
+      engagementRate,
     })
   });
 
@@ -114,4 +120,4 @@ http.interceptors.response.use(undefined, async error => {
   return Promise.reject(error);
 });
 
-module.exports = fetch;
+export default fetch;

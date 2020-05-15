@@ -1,8 +1,8 @@
 require('dotenv').config();
 
-const axios = require('axios'); 
-const CryptoJS = require('crypto-js');
-const logger = require('../logger');
+import axios from 'axios';
+import CryptoJS from 'crypto-js';
+import logger from '../logger';
 
 const API_BASE_URL = process.env.API_BASE_URL;
 const API_CLIENT_ID = process.env.API_CLIENT_ID;
@@ -15,7 +15,7 @@ const http = axios.create({
   timeout: 3000,
 });
 
-module.exports.revokeToken = async () => {
+const revokeToken = async () => {
   const data = {
     refresh_token: API_TOKEN,
     client_id: API_CLIENT_ID,
@@ -36,7 +36,7 @@ module.exports.revokeToken = async () => {
   return false;
 }
 
-module.exports.refreshToken = async () => {
+const refreshToken = async () => {
   const data = {
     refresh_token: API_TOKEN,
     client_id: API_CLIENT_ID,
@@ -63,7 +63,7 @@ module.exports.refreshToken = async () => {
   return false;
 }
 
-module.exports.encryptToken = decryptedToken => {
+const encryptToken = decryptedToken => {
   try {
     const token = CryptoJS.AES.encrypt(decryptedToken, SALT).toString();
     return token;
@@ -73,7 +73,7 @@ module.exports.encryptToken = decryptedToken => {
   return false;
 }
 
-module.exports.decryptToken = encryptedToken => {
+const decryptToken = encryptedToken => {
   try {
     const bytes  = CryptoJS.AES.decrypt(encryptedToken, SALT);
     const token = bytes.toString(CryptoJS.enc.Utf8);
@@ -83,3 +83,10 @@ module.exports.decryptToken = encryptedToken => {
   }
   return false;
 }
+
+export default {
+  revokeToken,
+  refreshToken,
+  encryptToken,
+  decryptToken,
+};

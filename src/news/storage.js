@@ -1,8 +1,9 @@
 require('dotenv').config();
 
-const auth = require('./auth');
-const logger = require('../logger');
-const MongoClient = require('mongodb').MongoClient;
+import auth from './auth';
+import logger from '../logger';
+import { MongoClient } from 'mongodb';
+
 const connectionUrl = process.env.DB_CONNECTION_STRING;
 
 const clientOptions = {
@@ -15,21 +16,21 @@ const dbName = process.env.DB_NAME;
 const colName = 'news';
 const client = new MongoClient(connectionUrl, clientOptions);
 
-module.exports.save = async function save(data) {
+const save = async data => {
   let success = false;
   try {
     if (client.isConnected() === false)
       await client.connect();
 
     const db = client.db(dbName);
-    const tmpColName = `news_${new Date().getTime()}`;
     const collection = db.collection(colName);
-    const tmpCollection = db.collection(tmpColName);
-    const dropCollection = await collection.countDocuments() > 0;
+    const writeOperations = [];
 
-    await tmpCollection.insertMany(data);
-    if (dropCollection) await collection.drop();
-    await tmpCollection.rename(colName);
+    data.forEach(item => writeOperations.push(
+      { updateOne: { filter: { article_id: item.article_id }, update: { $set: item }, upsert: true } }
+    ));
+
+    await collection.bulkWrite(writeOperations);
 
     success = true;
   } catch (err) {
@@ -39,16 +40,18 @@ module.exports.save = async function save(data) {
   return success;
 }
 
-module.exports.load = async function load() {
+const load = async ({ page = 0, pageSize = 20, }) => {
   let success = false;
+
   try {
     if (client.isConnected() === false)
       await client.connect();
 
     const db = client.db(dbName);
     const col = db.collection(colName);
+    const skipCount = page * pageSize;
 
-    success = await col.find({}, { sort: [['time', 'desc']]}).toArray();
+    success = await col.find({}, { sort: [['published', 'desc']]}).skip(skipCount).limit(pageSize).toArray();
   } catch (err) {
     logger(err.stack);
   }
@@ -56,7 +59,7 @@ module.exports.load = async function load() {
   return success;
 }
 
-module.exports.getNewsSources = async function load() {
+const getNewsSources = async () => {
   let success = false;
   try {
     if (client.isConnected() === false)
@@ -73,7 +76,7 @@ module.exports.getNewsSources = async function load() {
   return success;
 }
 
-module.exports.saveAccessToken = async function saveAccessToken(token) {
+const saveAccessToken = async token => {
   if (!token) return false;
 
   let success = false;
@@ -99,7 +102,7 @@ module.exports.saveAccessToken = async function saveAccessToken(token) {
   return success;
 }
 
-module.exports.getAccessToken = async function getAccessToken() {
+const getAccessToken = async () => {
   let success = false;
   try {
     if (client.isConnected() === false)
@@ -116,3 +119,11 @@ module.exports.getAccessToken = async function getAccessToken() {
 
   return success;
 }
+
+export default {
+  save,
+  load,
+  getNewsSources,
+  getAccessToken,
+  saveAccessToken,
+};
