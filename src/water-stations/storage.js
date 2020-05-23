@@ -1,7 +1,8 @@
 require('dotenv').config();
 
-const logger = require('../logger');
-const MongoClient = require('mongodb').MongoClient;
+import logger from '../logger';
+import { MongoClient } from 'mongodb';
+
 const connectionUrl = process.env.DB_CONNECTION_STRING;
 
 const clientOptions = {
@@ -13,7 +14,7 @@ const dbName = process.env.DB_NAME;
 const colName = 'waterStations';
 const client = new MongoClient(connectionUrl, clientOptions);
 
-module.exports.getByBox = async function getByBox({ sw, ne }) {
+export const getByBox = async ({ sw, ne }) => {
   let docs = [];
   try {
     if (client.isConnected() === false)
@@ -39,7 +40,7 @@ module.exports.getByBox = async function getByBox({ sw, ne }) {
   return docs;
 }
 
-module.exports.load = async function load({ lat, lng, r = 2500}) {
+export const getByRadius = async ({ lat, lng, r = 2500}) => {
   let docs = [];
   try {
     if (client.isConnected() === false)
@@ -66,3 +67,8 @@ module.exports.load = async function load({ lat, lng, r = 2500}) {
 
   return docs;
 }
+
+export default {
+  getByRadius,
+  getByBox,
+};
