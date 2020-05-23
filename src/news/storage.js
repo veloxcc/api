@@ -12,8 +12,8 @@ const clientOptions = {
   connectTimeoutMS: 8000,
 };
 
-const dbName = process.env.DB_NAME;
-const colName = 'news';
+const databaseName = process.env.DB_NAME;
+const collectionName = 'news';
 const client = new MongoClient(connectionUrl, clientOptions);
 
 const save = async data => {
@@ -22,8 +22,8 @@ const save = async data => {
     if (client.isConnected() === false)
       await client.connect();
 
-    const db = client.db(dbName);
-    const collection = db.collection(colName);
+    const db = client.db(databaseName);
+    const collection = db.collection(collectionName);
     const writeOperations = [];
 
     data.forEach(item => writeOperations.push(
@@ -47,8 +47,8 @@ const load = async ({ page = 0, pageSize = 20, }) => {
     if (client.isConnected() === false)
       await client.connect();
 
-    const db = client.db(dbName);
-    const col = db.collection(colName);
+    const db = client.db(databaseName);
+    const col = db.collection(collectionName);
     const skipCount = page * pageSize;
 
     success = await col.find({}, { sort: [['published', 'desc']]}).skip(skipCount).limit(pageSize).toArray();
@@ -65,7 +65,7 @@ const getNewsSources = async () => {
     if (client.isConnected() === false)
       await client.connect();
 
-    const db = client.db(dbName);
+    const db = client.db(databaseName);
     const col = db.collection('newsSources');
 
     success = await col.find().toArray();
@@ -85,7 +85,7 @@ const saveAccessToken = async token => {
     if (client.isConnected() === false)
       await client.connect();
 
-    const db = client.db(dbName);
+    const db = client.db(databaseName);
     const col = db.collection('settings');
 
     const callback = await col.updateOne(
@@ -108,7 +108,7 @@ const getAccessToken = async () => {
     if (client.isConnected() === false)
       await client.connect();
 
-    const db = client.db(dbName);
+    const db = client.db(databaseName);
     const col = db.collection('settings');
 
     const doc = await col.findOne({ property: 'news_access_token' });

@@ -10,8 +10,8 @@ const clientOptions = {
   useUnifiedTopology: true,
 };
 
-const dbName = process.env.DB_NAME;
-const colName = 'waterStations';
+const databaseName = process.env.DB_NAME;
+const collectionName = 'waterStations';
 const client = new MongoClient(connectionUrl, clientOptions);
 
 export const getByBox = async ({ sw, ne }) => {
@@ -21,8 +21,8 @@ export const getByBox = async ({ sw, ne }) => {
       await client.connect();
 
     const bounds = [sw, ne];
-    const db = client.db(dbName);
-    const collection = db.collection(colName);
+    const db = client.db(databaseName);
+    const collection = db.collection(collectionName);
 
     docs = await collection.find(
       { 'geometry.coordinates':
@@ -47,8 +47,8 @@ export const getByRadius = async ({ lat, lng, r = 2500}) => {
       await client.connect();
 
     const coordinates = [lng, lat];
-    const db = client.db(dbName);
-    const collection = db.collection(colName);
+    const db = client.db(databaseName);
+    const collection = db.collection(collectionName);
 
     docs = await collection.find(
       { 'geometry.coordinates':
