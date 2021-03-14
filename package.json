@@ -11,5 +11,8 @@
   },
   "devDependencies": {
     "axios-mock-adapter": "^1.17.0"
+  },
+  "scripts": {
+    "start": "npx vercel dev"
   }
 }

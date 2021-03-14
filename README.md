@@ -1,1 +1,1 @@
-# velox - cycling news api
+# velox - api
