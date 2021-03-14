@@ -1,6 +1,7 @@
 language: node_js
 node_js:
-  - "14"
+  - "15"
 install:
-  - npm install vercel
+  - npm i
+  - npm i vercel
   - ./node_modules/.bin/vercel --prod --name velox-api --scope velox --confirm --token $NOW_TOKEN --env API_BASE_URL=$API_BASE_URL --env API_TOKEN=$API_TOKEN --env API_FEED_ID=$API_FEED_ID --env API_CLIENT_ID=$API_CLIENT_ID --env API_CLIENT_SECRET=$API_CLIENT_SECRET --env DB_CONNECTION_STRING=$DB_CONNECTION_STRING --env DB_NAME=$DB_NAME --env PRISMIC_SECRET=$PRISMIC_SECRET --env CI_TOKEN=$CI_TOKEN --env CI_REQUESTS_ENDPOINT=$CI_REQUESTS_ENDPOINT --env FETCH_SECRET=$FETCH_SECRET
